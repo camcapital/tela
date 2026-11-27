@@ -7,7 +7,7 @@ import { ThemeSwitcher } from '../ThemeSwitcher'
 import { BrandLogo } from '../BrandLogo'
 import { Button } from '../ui/button'
 import { cn } from '../../lib/utils'
-import { useHostContext, useTelaHomeHref } from '../../lib/queries/host-context'
+import { useBrand, useHostContext, useTelaHomeHref } from '../../lib/queries/host-context'
 
 interface SharePageNode {
   id: number
@@ -35,8 +35,9 @@ export function ShareLayout({ token, share, children }: ShareLayoutProps) {
   // white-labels off host-context) and point the brand link at the org root;
   // on the canonical host it stays the tela wordmark → marketing landing.
   const org = useHostContext().data?.org ?? null
+  const brand = useBrand()
   const brandHref = org ? '/' : telaHome
-  const brandLabel = org ? `${org.name} home` : 'tela home'
+  const brandLabel = `${brand.name} home`
   const treeEnabled = share.include_descendants
   const tree = useShareTree(token, treeEnabled)
   const pages = tree.data?.pages ?? []

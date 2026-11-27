@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"html"
 	"net/http"
+	"strings"
 )
 
 // M15.5 PublicShare OG bot-gate. Mirrors the M11.0 /p/{id} pattern for share
@@ -234,7 +235,11 @@ func writeOGHTMLWithURL(w http.ResponseWriter, title, body, spaceName, pageURL, 
 // is intentionally absent — sharing the page's image card on a locked share
 // would defeat the password.
 func writeLockedShareOGHTML(w http.ResponseWriter, origin, token, siteName string) {
-	writeGenericOGHTML(w, "Protected page on Tela",
+	brand := "Tela"
+	if siteName != "" && !strings.EqualFold(siteName, "tela") {
+		brand = siteName
+	}
+	writeGenericOGHTML(w, "Protected page on "+brand,
 		"This page is password-protected. Open the link to enter the password.",
 		shareRootURL(origin, token), siteName)
 }

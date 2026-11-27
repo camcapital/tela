@@ -19,12 +19,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '../ui/sheet'
+import { BrandLogo } from '../BrandLogo'
 import { ChildGallery } from './blog/ChildGallery'
 import { DeckCoverImage } from './deck-cover-image'
 import { DownloadPdfButton } from './DownloadPdfButton'
 import { ReaderShell } from './ReaderShell'
 import { pageSummary } from './SummaryHint'
-import { useTelaHomeHref } from '../../lib/queries/host-context'
+import { useBrand, useTelaHomeHref } from '../../lib/queries/host-context'
 
 // Read-only spreadsheet grid for public sheet pages. Lazy — pulls in @defterjs/*
 // only when a public sheet is actually viewed.
@@ -64,6 +65,7 @@ export function PublicReaderView({
 }: PublicReaderViewProps) {
   const navigate = useNavigate()
   const telaHome = useTelaHomeHref()
+  const brand = useBrand()
 
   // SEO/social head for this public article: an author summary in frontmatter
   // wins, else the body lead. Canonical is the current (pretty) reader URL.
@@ -279,14 +281,14 @@ export function PublicReaderView({
           ) : null}
           <a
             href={telaHome}
-            aria-label="tela home"
+            aria-label={`${brand.name} home`}
             // shrink-0: a flex child shrinks below its content by default, so on
             // a phone the wordmark was squeezed until its text spilled out of its
             // own box and collided with the trailing controls. The space name
             // (truncate, below) is what should absorb the shrink instead.
-            className="inline-block shrink-0 rounded-[var(--radius-xs)] font-[family-name:var(--font-sans)] text-[length:var(--text-base)] font-medium text-[var(--text-primary)] no-underline transition-opacity duration-[var(--duration-fast)] hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+            className="inline-flex shrink-0 items-center rounded-[var(--radius-xs)] font-[family-name:var(--font-sans)] text-[length:var(--text-base)] font-medium text-[var(--text-primary)] no-underline transition-opacity duration-[var(--duration-fast)] hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
           >
-            tela
+            <BrandLogo size={20} />
           </a>
           <span aria-hidden className="shrink-0 text-[var(--text-muted)]">
             /
@@ -339,6 +341,7 @@ function PublicDeckView({
   summary?: string | null
   telaHome: string | null
 }) {
+  const brand = useBrand()
   const presentPath = `/api/public/spaces/${spaceId}/pages/${pageId}/deck/spa/`
   const coverPath = `/api/public/spaces/${spaceId}/pages/${pageId}/deck/cover`
   const present = () => window.open(presentPath, '_blank', 'noopener')
@@ -354,10 +357,10 @@ function PublicDeckView({
         <span className="flex min-w-0 items-center gap-[var(--space-2)]">
           <a
             href={telaHome ?? '/'}
-            aria-label="tela home"
-            className="font-[family-name:var(--font-sans)] text-[length:var(--text-base)] font-medium text-[var(--text-primary)] no-underline hover:opacity-70"
+            aria-label={`${brand.name} home`}
+            className="inline-flex shrink-0 items-center rounded-[var(--radius-xs)] font-[family-name:var(--font-sans)] text-[length:var(--text-base)] font-medium text-[var(--text-primary)] no-underline transition-opacity duration-[var(--duration-fast)] hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
           >
-            tela
+            <BrandLogo size={20} />
           </a>
           <span aria-hidden className="text-[var(--text-muted)]">
             /
