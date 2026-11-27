@@ -6,6 +6,7 @@ import {
   type DiscoverSort,
   type DiscoverSpace,
 } from '../../lib/queries/public'
+import { useBrand } from '../../lib/queries/host-context'
 import { useHeadMeta } from '../../lib/useHeadMeta'
 import { blogChip } from '../../lib/blog'
 import { Button } from '../ui/button'
@@ -29,6 +30,7 @@ export function PublicDiscover({
   onSort: (s: DiscoverSort) => void
   onOffset: (o: number) => void
 }) {
+  const brandName = useBrand().name
   const query = usePublicDiscover(sort, offset)
   const spaces = query.data?.spaces ?? []
   const page = Math.floor(offset / DISCOVER_PAGE_SIZE) + 1
@@ -38,7 +40,7 @@ export function PublicDiscover({
 
   useHeadMeta({
     title: 'Discover',
-    description: 'Browse public spaces published on tela.',
+    description: `Browse public spaces published on ${brandName}.`,
     canonicalPath: '/discover',
     ogType: 'website',
   })
@@ -48,7 +50,7 @@ export function PublicDiscover({
       <PublicMasthead
         title="Discover"
         avatarSeed="discover"
-        standfirst="Public spaces published on tela — browse the network."
+        standfirst={`Public spaces published on ${brandName} — browse the network.`}
         meta={<SortToggle sort={sort} onSort={onSort} disabled={query.isLoading} />}
       />
 

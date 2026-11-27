@@ -1,6 +1,7 @@
 package api
 
 import (
+	"cmp"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -583,11 +584,11 @@ func (s *Server) HandlePublicSpaceOGImage(w http.ResponseWriter, r *http.Request
 		http.Error(w, "error", http.StatusInternalServerError)
 		return
 	}
+	brand := s.resolveOGBrand(r, s.spaceOwnerOrg(r.Context(), sp.ID))
 	sub := sp.Description
 	if sub == "" {
-		sub = "A blog on tela"
+		sub = "A blog on " + cmp.Or(brand.name, "tela")
 	}
-	brand := s.resolveOGBrand(r, s.spaceOwnerOrg(r.Context(), sp.ID))
 	writeOGImagePNG(w, sp.Name, runeTruncate(sub, 70), brand)
 }
 
@@ -614,12 +615,13 @@ func (s *Server) HandlePublicUserOGImage(w http.ResponseWriter, r *http.Request)
 		http.NotFound(w, r)
 		return
 	}
+	// A user home isn't org-scoped; brand only from the request's custom domain.
+	brand := s.resolveOGBrand(r, 0)
 	sub := bio
 	if sub == "" {
-		sub = "on tela"
+		sub = "on " + cmp.Or(brand.name, "tela")
 	}
-	// A user home isn't org-scoped; brand only from the request's custom domain.
-	writeOGImagePNG(w, name, runeTruncate(sub, 70), s.resolveOGBrand(r, 0))
+	writeOGImagePNG(w, name, runeTruncate(sub, 70), brand)
 }
 
 func writeOGImagePNG(w http.ResponseWriter, title, subtitle string, brand ogBrand) {

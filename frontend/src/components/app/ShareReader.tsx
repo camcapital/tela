@@ -3,11 +3,12 @@ import { useNavigate } from '@tanstack/react-router'
 import { applyPdfThemeParam } from '../../lib/theme'
 import { buildWikilinkResolveIndex } from '../../lib/slug'
 import { useShareTree, type SharePublicMeta } from '../../lib/queries/share'
+import { BrandLogo } from '../BrandLogo'
 import { Button } from '../ui/button'
 import { DownloadPdfButton } from './DownloadPdfButton'
 import { ReaderShell } from './ReaderShell'
 import { ShareSidebar } from './ShareLayout'
-import { useTelaHomeHref } from '../../lib/queries/host-context'
+import { useBrand, useTelaHomeHref } from '../../lib/queries/host-context'
 
 interface ShareReaderViewProps {
   token: string
@@ -37,6 +38,7 @@ export function ShareReaderView({
 }: ShareReaderViewProps) {
   const navigate = useNavigate()
   const telaHome = useTelaHomeHref()
+  const brand = useBrand()
   // When gotenberg loads /share/<tok>?theme=dark for a PDF, apply it (once,
   // pre-paint). No-op for human viewers (no ?theme=), so their theme is kept.
   useState(() => applyPdfThemeParam())
@@ -86,12 +88,12 @@ export function ShareReaderView({
            client-routing into an authed/app surface. */
         <a
           href={telaHome}
-          aria-label="tela home"
+          aria-label={`${brand.name} home`}
           // shrink-0 so a narrow bar truncates the title beside it rather than
           // squeezing the wordmark's text out of its own box (see PublicReader).
-          className="inline-block shrink-0 rounded-[var(--radius-xs)] font-[family-name:var(--font-sans)] text-[length:var(--text-base)] font-medium text-[var(--text-primary)] no-underline transition-opacity duration-[var(--duration-fast)] hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+          className="inline-flex shrink-0 items-center rounded-[var(--radius-xs)] font-[family-name:var(--font-sans)] text-[length:var(--text-base)] font-medium text-[var(--text-primary)] no-underline transition-opacity duration-[var(--duration-fast)] hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
         >
-          tela
+          <BrandLogo size={20} />
         </a>
       }
       sourceLabel={share.source_url.replace(/^https?:\/\//, '')}

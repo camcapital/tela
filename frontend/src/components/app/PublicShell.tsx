@@ -1,6 +1,6 @@
 import { ThemeSwitcher } from '../ThemeSwitcher'
 import { BrandLogo } from '../BrandLogo'
-import { useHostContext, useTelaHomeHref } from '../../lib/queries/host-context'
+import { useBrand, useHostContext, useTelaHomeHref } from '../../lib/queries/host-context'
 import { cn } from '../../lib/utils'
 import { Card, CardDescription, CardHeader, CardTitle } from '../ui/card'
 import { useNoindex } from '../../lib/useHeadMeta'
@@ -8,7 +8,7 @@ import { useNoindex } from '../../lib/useHeadMeta'
 // The chrome around every logged-out surface (public reader, handle homes, the
 // file page): brand + theme switcher over a full-height column. On an org custom
 // domain BrandLogo white-labels to the org and the brand links to the org root;
-// on the canonical host it's the tela wordmark → marketing landing.
+// on the canonical host it's the instance brand (or tela) → home.
 //
 // `align` picks how <main> lays its child out: 'center' for a card-sized panel
 // (the default every public.tsx surface uses), 'stretch' for content that wants
@@ -22,8 +22,9 @@ export function PublicShell({
 }) {
   const telaHome = useTelaHomeHref()
   const org = useHostContext().data?.org ?? null
+  const brand = useBrand()
   const brandHref = org ? '/' : telaHome
-  const brandLabel = org ? `${org.name} home` : 'tela home'
+  const brandLabel = `${brand.name} home`
   return (
     <div className="min-h-dvh flex flex-col bg-[var(--surface-1)] text-[var(--text-primary)]">
       <header className="flex items-center justify-between px-[var(--space-6)] py-[var(--space-3)] border-b border-[var(--border-subtle)] shrink-0">
